@@ -25,7 +25,7 @@ ph = st.number_input("pH", min_value=3.5, max_value=9.5, value=6.5)
 rainfall = st.number_input("Rainfall (mm)", min_value=20.0, max_value=300.0, value=100.0)
 
 # Prediction
-if st.button("Recommend Crop"):
+if st.button("Recommend Crop",type="primary"):
     try:
         input_data = np.array([[N, P, K, temperature, humidity, ph, rainfall]])
         prediction = model.predict(input_data)
