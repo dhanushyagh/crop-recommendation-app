@@ -5,6 +5,7 @@ import numpy as np
 
 # Load the model
 try:
+    scaler =joblib.load('scaler.pkl')
     model = joblib.load('crop_recommendation_model.pkl')
 except FileNotFoundError:
     st.error("❌ Model file not found! Please make sure 'crop_recommendation_model.pkl' is in the same directory.")
