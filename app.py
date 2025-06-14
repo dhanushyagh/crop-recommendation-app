@@ -28,7 +28,8 @@ rainfall = st.number_input("Rainfall (mm)", min_value=20.0, max_value=300.0)
 if st.button("Recommend Crop",type="primary"):
     try:
         input_data = np.array([[N, P, K, temperature, humidity, ph, rainfall]])
-        prediction = model.predict(input_data)
+        input_scaled=scaler.transform(input_data)
+        prediction = model.predict(input_scaled)
         st.success(f"🌿 Recommended Crop: *{prediction[0].capitalize()}*")
     except Exception as e:
         st.error(f"An error occurred during prediction: {str(e)}")
