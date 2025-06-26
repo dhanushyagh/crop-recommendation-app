@@ -8,6 +8,7 @@ st.set_page_config(page_title="Crop Recommender", page_icon="🌾")
 st.title("🌾 Crop Recommendation System")
 
 # Step 1: Get user location
+coords = None
 if st.button("📍 Get my location"):
    coords = st_javascript("""await new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(
