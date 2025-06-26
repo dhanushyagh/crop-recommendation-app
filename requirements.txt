@@ -3,4 +3,4 @@ streamlit
 joblib
 numpy
 requests
-streamlit-javascript
+streamlit-geolocation
