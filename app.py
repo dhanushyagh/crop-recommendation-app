@@ -13,9 +13,15 @@ def get_weather(lat, lon):
     return round(res['main']['temp'],2), round(res['main']['humidity'],2), round(res.get('rain', {}).get('1h',0.0),2)
 
 def get_location_name(lat, lon):
-    res = requests.get(f"https://nominatim.openstreetmap.org/reverse?lat={lat}&lon={lon}&format=json").json()
-    return res.get("display_name", "Unknown Location")
-
+    try:
+        headers = {
+            "User-Agent": "crop-recommender/1.0 (your_email@example.com)"
+        }
+        url = f"https://nominatim.openstreetmap.org/reverse?lat={lat}&lon={lon}&format=json"
+        res = requests.get(url, headers=headers).json()
+        return res.get("display_name", "Unknown Location")
+    except:
+        return "Unknown Location"
 # Use the component
 loc = streamlit_geolocation()
 if loc:
