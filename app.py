@@ -6,7 +6,7 @@ from streamlit_javascript import st_javascript
 st.set_page_config(page_title="Crop Recommendation", page_icon="🌾")
 st.title("🌾 Crop Recommendation System")
 
-api_key = "d56fb2ef217db80dee4a005b2c8e25e4" 
+api_key = "YOUR_OPENWEATHERMAP_API_KEY"  # Replace with yours
 
 def get_weather(lat, lon, api_key):
     try:
@@ -27,8 +27,11 @@ def get_location_name(lat, lon):
     except:
         return "Unknown Location"
 
-# Step 1: Button to Get Location
-coords = None
+# Step 1: Init session variables
+if 'coords' not in st.session_state:
+    st.session_state.coords = None
+
+# Step 2: Button to get location
 if st.button("📍 Get My Location"):
     coords = st_javascript("""await new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(
@@ -43,11 +46,12 @@ if st.button("📍 Get My Location"):
             }
         );
     });""")
+    st.session_state.coords = coords
 
-# Step 2: If location is received
-if coords:
-    lat = coords.get("latitude")
-    lon = coords.get("longitude")
+# Step 3: If coords are stored in session, use them
+if st.session_state.coords:
+    lat = st.session_state.coords.get("latitude")
+    lon = st.session_state.coords.get("longitude")
 
     location_name = get_location_name(lat, lon)
     temp, humidity, rainfall = get_weather(lat, lon, api_key)
@@ -57,7 +61,7 @@ if coords:
 else:
     temp, humidity, rainfall = 0.0, 0.0, 0.0
 
-# Step 3: Input for other features
+# Step 4: Input form
 st.subheader("🧪 Enter Soil and Weather Data")
 N = st.number_input("Nitrogen", min_value=0)
 P = st.number_input("Phosphorus", min_value=0)
@@ -67,7 +71,7 @@ humidity = st.number_input("Humidity (%)", value=humidity)
 ph = st.number_input("pH", min_value=0.0, max_value=14.0)
 rainfall = st.number_input("Rainfall (mm)", value=rainfall)
 
-# Step 4: Prediction
+# Step 5: Prediction
 if st.button("Predict Crop"):
     try:
         model = joblib.load("crop_recommendation_model.pkl")
