@@ -8,6 +8,7 @@ st.set_page_config(page_title="Crop Recommender", page_icon="🌾")
 st.title("🌾 Crop Recommendation System")
 
 # Step 1: Get user location
+if st.button("📍 Get my location"):
 coords = st_javascript("""await new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -32,18 +33,18 @@ def get_weather(lat, lon, api_key):
         data = response.json()
         temp = data['main']['temp']
         humidity = data['main']['humidity']
-        return round(temp, 2), round(humidity, 2)
+        rainfall = data.get('rain' ,{}.get('1h',0.0)
+        return round(temp, 2), round(humidity, 2) ,round(rainfall,2)
     except:
-        return None, None
-
+        return None, None, None
 # Get temperature and humidity
 if coords:
     lat = coords.get("latitude")
     lon = coords.get("longitude")
-    temp, humidity = get_weather(lat, lon, api_key)
     st.success(f"📍 Location detected: ({lat:.2f}, {lon:.2f})")
+     temp, humidity ,rainfall= get_weather(lat, lon, api_key)
 else:
-    temp, humidity = "", ""
+    temp, humidity, rainfall= "", "",""
     st.warning("📍 Please allow location access above to auto-fill weather data.")
 
 # Step 3: Input Fields
