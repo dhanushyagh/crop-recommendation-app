@@ -9,7 +9,7 @@ st.title("🌾 Crop Recommendation System")
 
 # Step 1: Get user location
 if st.button("📍 Get my location"):
-    coords = st_javascript("""await new Promise((resolve, reject) => {
+   coords = st_javascript("""await new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(
         (position) => {
             resolve({
@@ -42,7 +42,7 @@ if coords:
     lat = coords.get("latitude")
     lon = coords.get("longitude")
     st.success(f"📍 Location detected: ({lat:.2f}, {lon:.2f})")
-             temp, humidity ,rainfall= get_weather(lat, lon, api_key)
+    temp, humidity ,rainfall= get_weather(lat, lon, api_key)
 else:
     temp, humidity, rainfall= "", "",""
     st.warning("📍 Please allow location access above to auto-fill weather data.")
