@@ -23,7 +23,7 @@ coords = st_javascript("""await new Promise((resolve, reject) => {
 });""")
 
 # Step 2: Use weather API
-api_key = "YOUR_OPENWEATHERMAP_API_KEY"  # Replace with yours
+api_key = "d56fb2ef217db80dee4a005b2c8e25e4" 
 
 def get_weather(lat, lon, api_key):
     try:
