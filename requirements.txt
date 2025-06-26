@@ -2,3 +2,5 @@ scikit-learn
 streamlit
 joblib
 numpy
+requests
+streamlit-javascript
