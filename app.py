@@ -33,7 +33,7 @@ def get_weather(lat, lon, api_key):
         data = response.json()
         temp = data['main']['temp']
         humidity = data['main']['humidity']
-        rainfall = data.get('rain' ,{}.get('1h',0.0)
+        rainfall = data.get('rain' ,{}.get('1h',0.0))
         return round(temp, 2), round(humidity, 2) ,round(rainfall,2)
     except:
         return None, None, None
