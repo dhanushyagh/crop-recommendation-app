@@ -9,7 +9,7 @@ st.title("🌾 Crop Recommendation System")
 
 # Step 1: Get user location
 if st.button("📍 Get my location"):
-coords = st_javascript("""await new Promise((resolve, reject) => {
+    coords = st_javascript("""await new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(
         (position) => {
             resolve({
