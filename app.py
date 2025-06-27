@@ -10,10 +10,10 @@ st.set_page_config(page_title="Crop Recommender", page_icon="🌾")
 st.markdown("""
     <style>
     body {
-        background-color: 'white';
+        background-color: #ffffff;
     }
     .stButton > button {
-        background-color: 'red';
+        background-color: #e63946;
         color: white;
         border: none;
         border-radius: 5px;
