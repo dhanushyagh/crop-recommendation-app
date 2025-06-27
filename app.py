@@ -45,17 +45,27 @@ if "weather_data" not in st.session_state:
 # Optional Location Autofill 
 st.subheader("📍 Optional: Auto-fill Weather Data from My Location")
 
-cols = st.columns([5, 1])
+# Keep a flag in session state for whether the user tried autofill
+if "show_location_result" not in st.session_state:
+    st.session_state.show_location_result = False
+if "location_name" not in st.session_state:
+    st.session_state.location_name = None
+if "weather_message" not in st.session_state:
+    st.session_state.weather_message = None
+if "weather_error" not in st.session_state:
+    st.session_state.weather_error = None
+
+# Inline button design with columns
+cols = st.columns([8, 1])
 with cols[0]:
-    st.caption("Click the button to use your device location and fetch weather automatically.")
+    st.caption("Click to use your device location and auto-fill weather data.")
 with cols[1]:
     clicked = streamlit_geolocation()
 
 if clicked:
     lat, lon = clicked['latitude'], clicked['longitude']
-    location_name = get_location_name(lat, lon)
     st.session_state.show_location_result = True
-    st.session_state.location_name = location_name
+    st.session_state.location_name = get_location_name(lat, lon)
 
     try:
         temp, humidity, rainfall = get_weather(lat, lon)
@@ -69,9 +79,10 @@ if clicked:
     except Exception as e:
         st.session_state.weather_message = None
         st.session_state.weather_error = f"⚠️ Could not fetch weather data: {e}"
-# Show results *only* if user pressed the button
+
+# SHOW ONLY IF USER CLICKED
 if st.session_state.show_location_result:
-    if "location_name" in st.session_state:
+    if st.session_state.location_name:
         st.success(f"📍 You are in: **{st.session_state.location_name}**")
     if st.session_state.weather_message:
         st.success(st.session_state.weather_message)
