@@ -9,13 +9,13 @@ st.set_page_config(page_title="Crop Recommender", page_icon="🌾")
 # ---------- Custom Styling ----------
 st.markdown("""
     <style>
-    /* Background Image */
-.stApp {
-    background: linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.7)),
-                url('https://images.unsplash.com/photo-1614332263417-25f9adca0f54');
-    background-size: cover;
-    background-position: center;
-}
+    /* Background Image with subtle overlay so image shows but text stays readable */
+    .stApp {
+        background: linear-gradient(rgba(255,255,255,0.35), rgba(255,255,255,0.35)),
+                    url('https://images.unsplash.com/photo-1614332263417-25f9adca0f54');
+        background-size: cover;
+        background-position: center;
+    }
 
     /* Make cards semi-transparent */
     .card {
@@ -61,7 +61,6 @@ st.title("🌾 Crop Recommendation System")
 api_key = "d56fb2ef217db80dee4a005b2c8e25e4"
 
 # ---------- Weather fetch helpers ----------
-
 def get_weather(lat, lon):
     res = requests.get(
         f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&units=metric&appid={api_key}"
