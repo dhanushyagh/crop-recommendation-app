@@ -42,30 +42,48 @@ if "weather_data" not in st.session_state:
         "rainfall": 0.0
     }
 
-# Optional Location Autofill
+# Optional Location Autofill 
 
 st.subheader("📍 Optional: Auto-fill Weather Data from My Location")
+st.caption("If you want, click the button below to use your device location and fetch local weather automatically.")
 
-st.caption("If you want, click below to use your device location and fetch local weather automatically.")
+if "show_location_result" not in st.session_state:
+    st.session_state.show_location_result = False
 
-loc = streamlit_geolocation()
+if st.button("Auto-fill Weather from My Location"):
+    loc = streamlit_geolocation()
+    if loc:
+        lat, lon = loc['latitude'], loc['longitude']
+        location_name = get_location_name(lat, lon)
+        st.session_state.location_name = location_name
+        st.session_state.show_location_result = True
+        
+        try:
+            temp, humidity, rainfall = get_weather(lat, lon)
+            st.session_state.weather_data = {
+                "temp": temp,
+                "humidity": humidity,
+                "rainfall": rainfall
+            }
+            st.session_state.weather_message = f"✅ Weather auto-filled: 🌡️ {temp}°C | 💧 {humidity}% | 🌧️ {rainfall} mm"
+            st.session_state.weather_error = None
+        except Exception as e:
+            st.session_state.weather_message = None
+            st.session_state.weather_error = f"⚠️ Could not fetch weather data: {e}"
+    else:
+        st.session_state.location_name = "Unknown Location"
+        st.session_state.show_location_result = True
+        st.session_state.weather_message = None
+        st.session_state.weather_error = "⚠️ Could not get location from device."
 
-if loc:
-    lat, lon = loc['latitude'], loc['longitude']
-    location_name = get_location_name(lat, lon)
-    st.success(f"📍 You are in: **{location_name}**")
-    
-    try:
-        temp, humidity, rainfall = get_weather(lat, lon)
-        st.session_state.weather_data = {
-            "temp": temp,
-            "humidity": humidity,
-            "rainfall": rainfall
-        }
-        st.success(f"✅ Weather auto-filled: 🌡️ {temp}°C | 💧 {humidity}% | 🌧️ {rainfall} mm")
-    except Exception as e:
-        st.error(f"⚠️ Could not fetch weather data: {e}")
-
+# Show results *only* if user pressed the button
+if st.session_state.show_location_result:
+    if "location_name" in st.session_state:
+        st.success(f"📍 You are in: **{st.session_state.location_name}**")
+    if st.session_state.weather_message:
+        st.success(st.session_state.weather_message)
+    if st.session_state.weather_error:
+        st.error(st.session_state.weather_error)
 # Inputs Section (always visible) 
 
 st.subheader("🧪 Enter Soil and Weather Data")
