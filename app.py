@@ -4,26 +4,24 @@ import requests
 import joblib
 
 # ---------- Page Setup ----------
-st.set_page_config(page_title="Crop Recommender", page_icon="🌾")
+st.set_page_config(page_title="Crop Recommender", page_icon="🌾", layout="wide")
 
 # ---------- Custom Styling ----------
 st.markdown("""
     <style>
-    /* Background: Soft gradient for readability */
-    .stApp {
-        background: linear-gradient(to bottom right, #fef9ef, #e9f5db);
+    body, .stApp {
+        background-color: black;
     }
 
-    /* Card-like sections */
     .card {
-        background-color: rgba(255, 255, 255, 0.9);
+        background-color: #ffffff;
         padding: 20px;
         border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         margin-bottom: 20px;
+        color: #000;
     }
 
-    /* Red button styling */
     .stButton > button {
         background-color: #e63946;
         color: white;
@@ -37,15 +35,13 @@ st.markdown("""
         color: white;
     }
 
-    /* Headings styling */
     h1, h2, h3, h4 {
-        color: #264653;
+        color: #f1f1f1;
         font-family: Arial, sans-serif;
     }
 
-    /* Captions and labels */
-    .css-10trblm, .css-1v0mbdj, .css-1fv8s86 {
-        color: #4d4d4d;
+    .caption, .css-10trblm, .css-1v0mbdj, .css-1fv8s86 {
+        color: #cccccc;
         font-family: Arial, sans-serif;
     }
     </style>
@@ -109,86 +105,98 @@ if "weather_message" not in st.session_state:
 if "weather_error" not in st.session_state:
     st.session_state.weather_error = None
 
-# ---------- Optional Location Autofill ----------
-with st.container():
-    st.markdown('<div class="card">', unsafe_allow_html=True)
-    st.subheader("📍 Optional Weather Auto-fill")
-    cols = st.columns([8, 1])
-    with cols[0]:
-        st.caption("Click to use your location for autofill:")
-    with cols[1]:
-        clicked = streamlit_geolocation()
-    st.markdown('</div>', unsafe_allow_html=True)
+# ---------- Layout: Two columns ----------
+col1, col2 = st.columns([2, 1])
 
-if clicked:
-    lat, lon = clicked['latitude'], clicked['longitude']
-    st.session_state.show_location_result = True
-    st.session_state.location_name = get_location_name(lat, lon)
-
-    try:
-        temp, humidity, rainfall = get_weather(lat, lon)
-        st.session_state.weather_data = {
-            "temp": temp,
-            "humidity": humidity,
-            "rainfall": rainfall
-        }
-        st.session_state.weather_message = f"✅ Weather auto-filled: 🌡️ {temp}°C | 💧 {humidity}% | 🌧️ {rainfall} mm"
-        st.session_state.weather_error = None
-    except Exception as e:
-        st.session_state.weather_message = None
-        st.session_state.weather_error = f"⚠️ Could not fetch weather data: {e}"
-
-# ---------- Show Weather Results ONLY if Clicked ----------
-if st.session_state.show_location_result:
+with col1:
+    # ---------- Optional Location Autofill ----------
     with st.container():
         st.markdown('<div class="card">', unsafe_allow_html=True)
-        if st.session_state.location_name:
-            st.success(f"📍 You are in: **{st.session_state.location_name}**")
-        if st.session_state.weather_message:
-            st.info(st.session_state.weather_message)
-        if st.session_state.weather_error:
-            st.error(st.session_state.weather_error)
+        st.subheader("📍 Optional Weather Auto-fill")
+        cols = st.columns([8, 1])
+        with cols[0]:
+            st.caption("Click to use your location for autofill:")
+        with cols[1]:
+            clicked = streamlit_geolocation()
         st.markdown('</div>', unsafe_allow_html=True)
 
-# ---------- Soil and Weather Input Section ----------
-with st.container():
-    st.markdown('<div class="card">', unsafe_allow_html=True)
-    st.subheader("🧪 Enter Soil and Weather Data")
+    if clicked:
+        lat, lon = clicked['latitude'], clicked['longitude']
+        st.session_state.show_location_result = True
+        st.session_state.location_name = get_location_name(lat, lon)
 
-    N = st.number_input("Nitrogen", min_value=0)
-    P = st.number_input("Phosphorus", min_value=0)
-    K = st.number_input("Potassium", min_value=0)
-
-    temperature = st.number_input(
-        "Temperature (°C)",
-        value=st.session_state.weather_data["temp"]
-    )
-    humidity = st.number_input(
-        "Humidity (%)",
-        value=st.session_state.weather_data["humidity"]
-    )
-    ph = st.number_input(
-        "pH",
-        min_value=0.0, max_value=14.0
-    )
-    rainfall = st.number_input(
-        "Rainfall (mm)",
-        value=st.session_state.weather_data["rainfall"]
-    )
-    st.markdown('</div>', unsafe_allow_html=True)
-
-# ---------- Prediction Section ----------
-with st.container():
-    st.markdown('<div class="card">', unsafe_allow_html=True)
-    if st.button("Predict Crop"):
         try:
-            model = joblib.load("crop_recommendation_model.pkl")
-            pred = model.predict([[N, P, K, temperature, humidity, ph, rainfall]])[0]
-            st.success(f"🌱 Recommended Crop: **{pred.upper()}**")
-
-            recommendation = get_fertilizer_recommendation(pred)
-            st.info(f"🧪 Fertilizer Recommendation:\n{recommendation}")
-
+            temp, humidity, rainfall = get_weather(lat, lon)
+            st.session_state.weather_data = {
+                "temp": temp,
+                "humidity": humidity,
+                "rainfall": rainfall
+            }
+            st.session_state.weather_message = f"✅ Weather auto-filled: 🌡️ {temp}°C | 💧 {humidity}% | 🌧️ {rainfall} mm"
+            st.session_state.weather_error = None
         except Exception as e:
-            st.error(f"⚠️ Something went wrong with prediction: {e}")
-    st.markdown('</div>', unsafe_allow_html=True)
+            st.session_state.weather_message = None
+            st.session_state.weather_error = f"⚠️ Could not fetch weather data: {e}"
+
+    # ---------- Show Weather Results ONLY if Clicked ----------
+    if st.session_state.show_location_result:
+        with st.container():
+            st.markdown('<div class="card">', unsafe_allow_html=True)
+            if st.session_state.location_name:
+                st.success(f"📍 You are in: **{st.session_state.location_name}**")
+            if st.session_state.weather_message:
+                st.info(st.session_state.weather_message)
+            if st.session_state.weather_error:
+                st.error(st.session_state.weather_error)
+            st.markdown('</div>', unsafe_allow_html=True)
+
+    # ---------- Soil and Weather Input Section ----------
+    with st.container():
+        st.markdown('<div class="card">', unsafe_allow_html=True)
+        st.subheader("🧪 Enter Soil and Weather Data")
+
+        N = st.number_input("Nitrogen", min_value=0)
+        P = st.number_input("Phosphorus", min_value=0)
+        K = st.number_input("Potassium", min_value=0)
+
+        temperature = st.number_input(
+            "Temperature (°C)",
+            value=st.session_state.weather_data["temp"]
+        )
+        humidity = st.number_input(
+            "Humidity (%)",
+            value=st.session_state.weather_data["humidity"]
+        )
+        ph = st.number_input(
+            "pH",
+            min_value=0.0, max_value=14.0
+        )
+        rainfall = st.number_input(
+            "Rainfall (mm)",
+            value=st.session_state.weather_data["rainfall"]
+        )
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    # ---------- Prediction Section ----------
+    with st.container():
+        st.markdown('<div class="card">', unsafe_allow_html=True)
+        if st.button("Predict Crop"):
+            try:
+                model = joblib.load("crop_recommendation_model.pkl")
+                pred = model.predict([[N, P, K, temperature, humidity, ph, rainfall]])[0]
+                st.success(f"🌱 Recommended Crop: **{pred.upper()}**")
+
+                recommendation = get_fertilizer_recommendation(pred)
+                st.info(f"🧪 Fertilizer Recommendation:\n{recommendation}")
+
+            except Exception as e:
+                st.error(f"⚠️ Something went wrong with prediction: {e}")
+        st.markdown('</div>', unsafe_allow_html=True)
+
+with col2:
+    # ---------- Farmer Image ----------
+    st.image(
+        "https://images.unsplash.com/photo-1598970434795-0c54fe7c0642",
+        caption="A happy farmer holding crops",
+        use_column_width=True
+    )
