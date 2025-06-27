@@ -11,7 +11,7 @@ st.markdown("""
     <style>
     /* Background Image */
 .stApp {
-    background: linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.2)),
+    background: linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.7)),
                 url('https://images.unsplash.com/photo-1614332263417-25f9adca0f54');
     background-size: cover;
     background-position: center;
