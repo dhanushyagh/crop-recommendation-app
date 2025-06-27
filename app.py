@@ -3,12 +3,35 @@ import streamlit as st
 import requests
 import joblib
 
+# ---------- Custom Page Setup ----------
 st.set_page_config(page_title="Crop Recommender", page_icon="🌾")
+
+# ---------- Custom Styling ----------
+st.markdown("""
+    <style>
+    body {
+        background-color: #f8f4e3;
+    }
+    .stButton > button {
+        background-color: #e63946;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 8px 16px;
+    }
+    .stButton > button:hover {
+        background-color: #d62828;
+        color: white;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+# ---------- App Title ----------
 st.title("🌾 Crop Recommendation System")
 
 api_key = "d56fb2ef217db80dee4a005b2c8e25e4"
 
-#  Weather fetch helpers
+# ---------- Weather fetch helpers ----------
 
 def get_weather(lat, lon):
     res = requests.get(
@@ -33,7 +56,7 @@ def get_location_name(lat, lon):
     except:
         return "Unknown Location"
 
-# Session state for autofill 
+# ---------- Session State Setup ----------
 
 if "weather_data" not in st.session_state:
     st.session_state.weather_data = {
@@ -42,23 +65,25 @@ if "weather_data" not in st.session_state:
         "rainfall": 0.0
     }
 
-# Optional Location Autofill 
-st.subheader("📍 Optional: Auto-fill Weather Data from My Location")
-
-# Keep a flag in session state for whether the user tried autofill
 if "show_location_result" not in st.session_state:
     st.session_state.show_location_result = False
+
 if "location_name" not in st.session_state:
     st.session_state.location_name = None
+
 if "weather_message" not in st.session_state:
     st.session_state.weather_message = None
+
 if "weather_error" not in st.session_state:
     st.session_state.weather_error = None
 
-# Inline button design with columns
+# ---------- Optional Location Autofill ----------
+
+st.subheader("📍 Optional Weather Auto-fill")
+
 cols = st.columns([8, 1])
 with cols[0]:
-    st.caption("Click to use your device location and auto-fill weather data.")
+    st.caption("Click to use your location for autofill:")
 with cols[1]:
     clicked = streamlit_geolocation()
 
@@ -80,15 +105,18 @@ if clicked:
         st.session_state.weather_message = None
         st.session_state.weather_error = f"⚠️ Could not fetch weather data: {e}"
 
-# SHOW ONLY IF USER CLICKED
+# ---------- Show Results ONLY if Clicked ----------
+
 if st.session_state.show_location_result:
     if st.session_state.location_name:
         st.success(f"📍 You are in: **{st.session_state.location_name}**")
     if st.session_state.weather_message:
-        st.success(st.session_state.weather_message)
+        # Use blue color bar for weather autofill
+        st.info(st.session_state.weather_message)
     if st.session_state.weather_error:
         st.error(st.session_state.weather_error)
-# Inputs Section (always visible) 
+
+# ---------- Inputs Section ----------
 
 st.subheader("🧪 Enter Soil and Weather Data")
 
@@ -113,7 +141,7 @@ rainfall = st.number_input(
     value=st.session_state.weather_data["rainfall"]
 )
 
-# Prediction Button 
+# ---------- Prediction Button ----------
 
 if st.button("Predict Crop"):
     try:
