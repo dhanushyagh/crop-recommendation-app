@@ -10,7 +10,7 @@ st.set_page_config(page_title="Crop Recommender", page_icon="🌾")
 st.markdown("""
     <style>
     body {
-        background-color: #ffffff;
+        background-color: #f8f4e3;
     }
     .stButton > button {
         background-color: #e63946;
@@ -55,6 +55,19 @@ def get_location_name(lat, lon):
         return res.get("display_name", "Unknown Location")
     except:
         return "Unknown Location"
+
+# ---------- Fertilizer recommendation dictionary ----------
+
+fertilizer_data = {
+    "rice": "Urea: 50kg/ha, DAP: 25kg/ha",
+    "wheat": "Urea: 40kg/ha, DAP: 20kg/ha",
+    "maize": "Urea: 55kg/ha, MOP: 20kg/ha",
+    "cotton": "Urea: 60kg/ha, SSP: 30kg/ha",
+    "sugarcane": "Urea: 80kg/ha, DAP: 40kg/ha, MOP: 30kg/ha",
+}
+
+def get_fertilizer_recommendation(crop):
+    return fertilizer_data.get(crop.lower(), "Generic recommendation: Urea: 45kg/ha, DAP: 20kg/ha")
 
 # ---------- Session State Setup ----------
 
@@ -111,7 +124,6 @@ if st.session_state.show_location_result:
     if st.session_state.location_name:
         st.success(f"📍 You are in: **{st.session_state.location_name}**")
     if st.session_state.weather_message:
-        # Use blue color bar for weather autofill
         st.info(st.session_state.weather_message)
     if st.session_state.weather_error:
         st.error(st.session_state.weather_error)
@@ -147,6 +159,12 @@ if st.button("Predict Crop"):
     try:
         model = joblib.load("crop_recommendation_model.pkl")
         pred = model.predict([[N, P, K, temperature, humidity, ph, rainfall]])[0]
+        
         st.success(f"🌱 Recommended Crop: **{pred.upper()}**")
+
+        # Show fertilizer recommendation
+        recommendation = get_fertilizer_recommendation(pred)
+        st.info(f"🧪 Fertilizer Recommendation:\n{recommendation}")
+
     except Exception as e:
         st.error(f"⚠️ Something went wrong with prediction: {e}")
