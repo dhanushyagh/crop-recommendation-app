@@ -132,6 +132,6 @@ with col1:
 
 with col2:
     st.image(
-        "https://images.unsplash.com/photo-1607189200591-30f0e1d275c4",
+        "https://images.app.goo.gl/jBgN5t1YUcQEivwL8"
         use_column_width=True
     )
