@@ -3,57 +3,50 @@ import streamlit as st
 import requests
 import joblib
 
-# ---------- Page Setup ----------
+# Page Setup
 st.set_page_config(page_title="Crop Recommender", page_icon="🌾", layout="wide")
 
-# ---------- Custom Styling ----------
+# Custom Styling
 st.markdown("""
     <style>
-    body, .stApp {
+    .stApp {
         background-color: black;
     }
-
     .card {
-        background-color: #ffffff;
+        background-color: white;
         padding: 20px;
         border-radius: 10px;
         box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         margin-bottom: 20px;
-        color: #000;
+        color: black;
     }
-
     .stButton > button {
         background-color: #e63946;
         color: white;
-        border: none;
         border-radius: 8px;
         padding: 10px 20px;
+        border: none;
         font-size: 16px;
     }
     .stButton > button:hover {
         background-color: #d62828;
-        color: white;
     }
-
     h1, h2, h3, h4 {
         color: #f1f1f1;
-        font-family: Arial, sans-serif;
     }
-
     .caption, .css-10trblm, .css-1v0mbdj, .css-1fv8s86 {
         color: #cccccc;
-        font-family: Arial, sans-serif;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# ---------- Title ----------
+# Title
 st.title("🌾 Crop Recommendation System")
 
-# ---------- API Key ----------
+# API Key
 api_key = "d56fb2ef217db80dee4a005b2c8e25e4"
 
-# ---------- Weather fetch helpers ----------
+# Helpers
 def get_weather(lat, lon):
     res = requests.get(
         f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&units=metric&appid={api_key}"
@@ -68,16 +61,14 @@ def get_weather(lat, lon):
 
 def get_location_name(lat, lon):
     try:
-        headers = {
-            "User-Agent": "crop-recommender/1.0 (your_email@example.com)"
-        }
+        headers = {"User-Agent": "crop-recommender/1.0 (your_email@example.com)"}
         url = f"https://nominatim.openstreetmap.org/reverse?lat={lat}&lon={lon}&format=json"
         res = requests.get(url, headers=headers).json()
         return res.get("display_name", "Unknown Location")
     except:
         return "Unknown Location"
 
-# ---------- Fertilizer recommendation data ----------
+# Fertilizer recommendations
 fertilizer_data = {
     "rice": "Urea: 50kg/ha, DAP: 25kg/ha",
     "wheat": "Urea: 40kg/ha, DAP: 20kg/ha",
@@ -85,31 +76,25 @@ fertilizer_data = {
     "cotton": "Urea: 60kg/ha, SSP: 30kg/ha",
     "sugarcane": "Urea: 80kg/ha, DAP: 40kg/ha, MOP: 30kg/ha",
 }
-
 def get_fertilizer_recommendation(crop):
     return fertilizer_data.get(crop.lower(), "Generic recommendation: Urea: 45kg/ha, DAP: 20kg/ha")
 
-# ---------- Session State ----------
+# Session State
 if "weather_data" not in st.session_state:
     st.session_state.weather_data = {"temp": 0.0, "humidity": 0.0, "rainfall": 0.0}
-
 if "show_location_result" not in st.session_state:
     st.session_state.show_location_result = False
-
 if "location_name" not in st.session_state:
     st.session_state.location_name = None
-
 if "weather_message" not in st.session_state:
     st.session_state.weather_message = None
-
 if "weather_error" not in st.session_state:
     st.session_state.weather_error = None
 
-# ---------- Layout: Two columns ----------
-col1, col2 = st.columns([2, 1])
+# Layout
+col1, col2 = st.columns([2, 1], gap="large")
 
 with col1:
-    # ---------- Optional Location Autofill ----------
     with st.container():
         st.markdown('<div class="card">', unsafe_allow_html=True)
         st.subheader("📍 Optional Weather Auto-fill")
@@ -124,7 +109,6 @@ with col1:
         lat, lon = clicked['latitude'], clicked['longitude']
         st.session_state.show_location_result = True
         st.session_state.location_name = get_location_name(lat, lon)
-
         try:
             temp, humidity, rainfall = get_weather(lat, lon)
             st.session_state.weather_data = {
@@ -138,7 +122,7 @@ with col1:
             st.session_state.weather_message = None
             st.session_state.weather_error = f"⚠️ Could not fetch weather data: {e}"
 
-    # ---------- Show Weather Results ONLY if Clicked ----------
+    # ONLY show after click
     if st.session_state.show_location_result:
         with st.container():
             st.markdown('<div class="card">', unsafe_allow_html=True)
@@ -150,34 +134,18 @@ with col1:
                 st.error(st.session_state.weather_error)
             st.markdown('</div>', unsafe_allow_html=True)
 
-    # ---------- Soil and Weather Input Section ----------
     with st.container():
         st.markdown('<div class="card">', unsafe_allow_html=True)
         st.subheader("🧪 Enter Soil and Weather Data")
-
         N = st.number_input("Nitrogen", min_value=0)
         P = st.number_input("Phosphorus", min_value=0)
         K = st.number_input("Potassium", min_value=0)
-
-        temperature = st.number_input(
-            "Temperature (°C)",
-            value=st.session_state.weather_data["temp"]
-        )
-        humidity = st.number_input(
-            "Humidity (%)",
-            value=st.session_state.weather_data["humidity"]
-        )
-        ph = st.number_input(
-            "pH",
-            min_value=0.0, max_value=14.0
-        )
-        rainfall = st.number_input(
-            "Rainfall (mm)",
-            value=st.session_state.weather_data["rainfall"]
-        )
+        temperature = st.number_input("Temperature (°C)", value=st.session_state.weather_data["temp"])
+        humidity = st.number_input("Humidity (%)", value=st.session_state.weather_data["humidity"])
+        ph = st.number_input("pH", min_value=0.0, max_value=14.0)
+        rainfall = st.number_input("Rainfall (mm)", value=st.session_state.weather_data["rainfall"])
         st.markdown('</div>', unsafe_allow_html=True)
 
-    # ---------- Prediction Section ----------
     with st.container():
         st.markdown('<div class="card">', unsafe_allow_html=True)
         if st.button("Predict Crop"):
@@ -185,18 +153,16 @@ with col1:
                 model = joblib.load("crop_recommendation_model.pkl")
                 pred = model.predict([[N, P, K, temperature, humidity, ph, rainfall]])[0]
                 st.success(f"🌱 Recommended Crop: **{pred.upper()}**")
-
                 recommendation = get_fertilizer_recommendation(pred)
                 st.info(f"🧪 Fertilizer Recommendation:\n{recommendation}")
-
             except Exception as e:
                 st.error(f"⚠️ Something went wrong with prediction: {e}")
         st.markdown('</div>', unsafe_allow_html=True)
 
 with col2:
-    # ---------- Farmer Image ----------
+    st.markdown('<div style="padding: 10px; background-color: black;">', unsafe_allow_html=True)
     st.image(
         "https://images.unsplash.com/photo-1598970434795-0c54fe7c0642",
-        caption="A happy farmer holding crops",
         use_column_width=True
     )
+    st.markdown('</div>', unsafe_allow_html=True)
