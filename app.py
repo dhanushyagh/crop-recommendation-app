@@ -8,7 +8,7 @@ st.title("🌾 Crop Recommendation System")
 
 api_key = "d56fb2ef217db80dee4a005b2c8e25e4"
 
-# Weather fetch helpers 
+#  Weather fetch helpers
 
 def get_weather(lat, lon):
     res = requests.get(
@@ -33,55 +33,63 @@ def get_location_name(lat, lon):
     except:
         return "Unknown Location"
 
-#  UI 
+# Session state for autofill 
 
-st.subheader("📍 Choose how to enter weather data")
+if "weather_data" not in st.session_state:
+    st.session_state.weather_data = {
+        "temp": 0.0,
+        "humidity": 0.0,
+        "rainfall": 0.0
+    }
 
-# Option for user to choose
-mode = st.radio(
-    "How do you want to provide weather data?",
-    ["Use my location", "Enter manually"]
-)
+# Optional Location Autofill
 
-# Default values
-temp_default = 0.0
-humidity_default = 0.0
-rainfall_default = 0.0
+st.subheader("📍 Optional: Auto-fill Weather Data from My Location")
 
-if mode == "Use my location":
-    st.info("Click the button below to get your current location.")
-    loc = streamlit_geolocation()
+st.caption("If you want, click below to use your device location and fetch local weather automatically.")
+
+loc = streamlit_geolocation()
+
+if loc:
+    lat, lon = loc['latitude'], loc['longitude']
+    location_name = get_location_name(lat, lon)
+    st.success(f"📍 You are in: **{location_name}**")
     
-    if loc:
-        lat, lon = loc['latitude'], loc['longitude']
-        location_name = get_location_name(lat, lon)
-        st.success(f"📍 You are in: **{location_name}**")
-        
-        try:
-            temp, humidity, rainfall = get_weather(lat, lon)
-            st.success(f"🌡️ {temp}°C | 💧 {humidity}% | 🌧️ {rainfall} mm")
-            temp_default = temp
-            humidity_default = humidity
-            rainfall_default = rainfall
-        except Exception as e:
-            st.error(f"⚠️ Could not fetch weather data: {e}")
-    else:
-        st.warning("👉 Allow location access or enter details manually below.")
+    try:
+        temp, humidity, rainfall = get_weather(lat, lon)
+        st.session_state.weather_data = {
+            "temp": temp,
+            "humidity": humidity,
+            "rainfall": rainfall
+        }
+        st.success(f"✅ Weather auto-filled: 🌡️ {temp}°C | 💧 {humidity}% | 🌧️ {rainfall} mm")
+    except Exception as e:
+        st.error(f"⚠️ Could not fetch weather data: {e}")
 
-else:
-    st.info("You chose to enter weather data manually.")
-
-#Inputs Section 
+# Inputs Section (always visible) 
 
 st.subheader("🧪 Enter Soil and Weather Data")
 
 N = st.number_input("Nitrogen", min_value=0)
 P = st.number_input("Phosphorus", min_value=0)
 K = st.number_input("Potassium", min_value=0)
-temperature = st.number_input("Temperature (°C)", value=temp_default)
-humidity = st.number_input("Humidity (%)", value=humidity_default)
-ph = st.number_input("pH", min_value=0.0, max_value=14.0)
-rainfall = st.number_input("Rainfall (mm)", value=rainfall_default)
+
+temperature = st.number_input(
+    "Temperature (°C)",
+    value=st.session_state.weather_data["temp"]
+)
+humidity = st.number_input(
+    "Humidity (%)",
+    value=st.session_state.weather_data["humidity"]
+)
+ph = st.number_input(
+    "pH",
+    min_value=0.0, max_value=14.0
+)
+rainfall = st.number_input(
+    "Rainfall (mm)",
+    value=st.session_state.weather_data["rainfall"]
+)
 
 # Prediction Button 
 
