@@ -10,11 +10,12 @@ st.set_page_config(page_title="Crop Recommender", page_icon="🌾")
 st.markdown("""
     <style>
     /* Background Image */
-    .stApp {
-        background: url('https://images.unsplash.com/photo-1501004318641-b39e6451bec6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80');
-        background-size: cover;
-        background-position: center;
-    }
+.stApp {
+    background: linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.7)),
+                url('https://images.unsplash.com/photo-1614332263417-25f9adca0f54');
+    background-size: cover;
+    background-position: center;
+}
 
     /* Make cards semi-transparent */
     .card {
