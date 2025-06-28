@@ -262,7 +262,7 @@ left_col, center_col, right_col = st.columns([1, 5, 1])
 
 with left_col:
     st.image(
-        "malefarmer.jpg", 
+        "malefarmer.jpeg", 
         caption="Male Farmer",
         use_column_width=True
     )
@@ -291,7 +291,7 @@ with center_col:
 
 with right_col:
     st.image(
-        "femalefarmer.jpg", 
+        "femalefarmer.jpeg", 
         caption="Female Farmer",
         use_column_width=True
     )
