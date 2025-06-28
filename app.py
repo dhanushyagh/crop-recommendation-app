@@ -3,10 +3,10 @@ import streamlit as st
 import requests
 import joblib
 
-# ---------- Custom Page Setup ----------
+#  Custom Page Setup 
 st.set_page_config(page_title="Crop Recommender", page_icon="🌾")
 
-# ---------- Custom Styling ----------
+# Custom Styling 
 st.markdown("""
     <style>
     body {
@@ -26,12 +26,12 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# ---------- App Title ----------
+#  App Title 
 st.title("🌾 Crop Recommendation System")
 
 api_key = "d56fb2ef217db80dee4a005b2c8e25e4"
 
-# ---------- Weather fetch helpers ----------
+#  Weather fetch helpers
 
 def get_weather(lat, lon):
     res = requests.get(
@@ -56,7 +56,7 @@ def get_location_name(lat, lon):
     except:
         return "Unknown Location"
 
-# ---------- Fertilizer recommendation dictionary ----------
+# Fertilizer recommendation dictionary 
 
 fertilizer_data = {
     "rice": "Urea: 50kg/ha, DAP: 25kg/ha",
@@ -69,8 +69,7 @@ fertilizer_data = {
 def get_fertilizer_recommendation(crop):
     return fertilizer_data.get(crop.lower(), "Generic recommendation: Urea: 45kg/ha, DAP: 20kg/ha")
 
-# ---------- Session State Setup ----------
-
+#  Session State Setup 
 if "weather_data" not in st.session_state:
     st.session_state.weather_data = {
         "temp": 0.0,
@@ -90,7 +89,7 @@ if "weather_message" not in st.session_state:
 if "weather_error" not in st.session_state:
     st.session_state.weather_error = None
 
-# ---------- Optional Location Autofill ----------
+#  Optional Location Autofill
 
 st.subheader("📍 Optional Weather Auto-fill")
 
@@ -118,7 +117,7 @@ if clicked:
         st.session_state.weather_message = None
         st.session_state.weather_error = f"⚠️ Could not fetch weather data: {e}"
 
-# ---------- Show Results ONLY if Clicked ----------
+#  Show Results ONLY if Clicked 
 
 if st.session_state.show_location_result:
     if st.session_state.location_name:
@@ -128,7 +127,7 @@ if st.session_state.show_location_result:
     if st.session_state.weather_error:
         st.error(st.session_state.weather_error)
 
-# ---------- Inputs Section ----------
+#  Inputs Section 
 
 st.subheader("🧪 Enter Soil and Weather Data")
 
@@ -153,12 +152,14 @@ rainfall = st.number_input(
     value=st.session_state.weather_data["rainfall"]
 )
 
-# ---------- Prediction Button ----------
+#  Prediction Button
 
 if st.button("Predict Crop"):
     try:
         model = joblib.load("crop_recommendation_model.pkl")
-        pred = model.predict([[N, P, K, temperature, humidity, ph, rainfall]])[0]
+        scaler = joblib.load("scaler.pkl")
+        user_input = scaler.transform([[N, P, K, temperature, humidity, ph, rainfall]])
+        pred = model.predict(user_input)[0]
         
         st.success(f"🌱 Recommended Crop: **{pred.upper()}**")
 
