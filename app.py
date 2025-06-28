@@ -59,11 +59,138 @@ def get_location_name(lat, lon):
 # Fertilizer recommendation dictionary 
 
 fertilizer_data = {
-    "rice": "Urea: 50kg/ha, DAP: 25kg/ha",
-    "wheat": "Urea: 40kg/ha, DAP: 20kg/ha",
-    "maize": "Urea: 55kg/ha, MOP: 20kg/ha",
-    "cotton": "Urea: 60kg/ha, SSP: 30kg/ha",
-    "sugarcane": "Urea: 80kg/ha, DAP: 40kg/ha, MOP: 30kg/ha",
+    "rice": (
+        "Nitrogen: 100 kg/ha (e.g., Urea)\n"
+        "Phosphorus: 50 kg/ha (e.g., DAP)\n"
+        "Potassium: 50 kg/ha (e.g., MOP)\n"
+        "Split application recommended at transplanting and tillering."
+    ),
+    "maize": (
+        "Nitrogen: 150 kg/ha (e.g., Urea)\n"
+        "Phosphorus: 60 kg/ha (e.g., DAP)\n"
+        "Potassium: 50 kg/ha (e.g., MOP)\n"
+        "Apply in 2 splits: sowing and knee-high stage."
+    ),
+    "chickpea": (
+        "Nitrogen: 20 kg/ha (e.g., Urea)\n"
+        "Phosphorus: 40 kg/ha (e.g., SSP/DAP)\n"
+        "Potassium: 20 kg/ha (e.g., MOP)\n"
+        "Basal application recommended before sowing."
+    ),
+    "kidneybeans": (
+        "Nitrogen: 25 kg/ha (e.g., Urea)\n"
+        "Phosphorus: 50 kg/ha (e.g., SSP/DAP)\n"
+        "Potassium: 25 kg/ha (e.g., MOP)\n"
+        "Apply as basal before sowing."
+    ),
+    "pegionbeans": (
+        "Nitrogen: 20 kg/ha (e.g., Urea)\n"
+        "Phosphorus: 50 kg/ha (e.g., SSP/DAP)\n"
+        "Potassium: 20 kg/ha (e.g., MOP)\n"
+        "Apply as basal dose at sowing."
+    ),
+    "mothbeans": (
+        "Nitrogen: 20 kg/ha (e.g., Urea)\n"
+        "Phosphorus: 30 kg/ha (e.g., SSP/DAP)\n"
+        "Potassium: 20 kg/ha (e.g., MOP)\n"
+        "Basal application recommended."
+    ),
+    "mungbeans": (
+        "Nitrogen: 20 kg/ha (e.g., Urea)\n"
+        "Phosphorus: 40 kg/ha (e.g., SSP/DAP)\n"
+        "Potassium: 20 kg/ha (e.g., MOP)\n"
+        "Apply before sowing."
+    ),
+    "blackgram": (
+        "Nitrogen: 20 kg/ha (e.g., Urea)\n"
+        "Phosphorus: 40 kg/ha (e.g., SSP/DAP)\n"
+        "Potassium: 20 kg/ha (e.g., MOP)\n"
+        "Basal application at sowing."
+    ),
+    "lentil": (
+        "Nitrogen: 20 kg/ha (e.g., Urea)\n"
+        "Phosphorus: 40 kg/ha (e.g., SSP/DAP)\n"
+        "Potassium: 20 kg/ha (e.g., MOP)\n"
+        "Apply as basal dose."
+    ),
+    "pomegranate": (
+        "Nitrogen: 250 g/tree/year (e.g., Urea)\n"
+        "Phosphorus: 125 g/tree/year (e.g., DAP)\n"
+        "Potassium: 125 g/tree/year (e.g., MOP)\n"
+        "Apply in two splits annually."
+    ),
+    "banana": (
+        "Nitrogen: 200 g/plant/year (e.g., Urea)\n"
+        "Phosphorus: 100 g/plant/year (e.g., DAP)\n"
+        "Potassium: 300 g/plant/year (e.g., MOP)\n"
+        "Split into 3-4 doses during growth."
+    ),
+    "mango": (
+        "Nitrogen: 750 g/tree/year (e.g., Urea)\n"
+        "Phosphorus: 500 g/tree/year (e.g., SSP/DAP)\n"
+        "Potassium: 750 g/tree/year (e.g., MOP)\n"
+        "Apply in two splits before monsoon and post-harvest."
+    ),
+    "grapes": (
+        "Nitrogen: 150 kg/ha (e.g., Urea)\n"
+        "Phosphorus: 120 kg/ha (e.g., DAP)\n"
+        "Potassium: 300 kg/ha (e.g., MOP)\n"
+        "Split application recommended at pruning and fruiting."
+    ),
+    "watermelon": (
+        "Nitrogen: 100 kg/ha (e.g., Urea)\n"
+        "Phosphorus: 50 kg/ha (e.g., DAP)\n"
+        "Potassium: 80 kg/ha (e.g., MOP)\n"
+        "Basal plus top dressing at vining."
+    ),
+    "muskmelon": (
+        "Nitrogen: 80 kg/ha (e.g., Urea)\n"
+        "Phosphorus: 40 kg/ha (e.g., DAP)\n"
+        "Potassium: 60 kg/ha (e.g., MOP)\n"
+        "Apply in 2 splits."
+    ),
+    "apple": (
+        "Nitrogen: 500 g/tree/year (e.g., Urea)\n"
+        "Phosphorus: 250 g/tree/year (e.g., SSP/DAP)\n"
+        "Potassium: 300 g/tree/year (e.g., MOP)\n"
+        "Apply in spring before flowering."
+    ),
+    "orange": (
+        "Nitrogen: 400 g/tree/year (e.g., Urea)\n"
+        "Phosphorus: 200 g/tree/year (e.g., SSP/DAP)\n"
+        "Potassium: 300 g/tree/year (e.g., MOP)\n"
+        "Split between pre-monsoon and post-monsoon."
+    ),
+    "papaya": (
+        "Nitrogen: 200 g/plant/year (e.g., Urea)\n"
+        "Phosphorus: 150 g/plant/year (e.g., DAP)\n"
+        "Potassium: 200 g/plant/year (e.g., MOP)\n"
+        "Apply monthly in small doses."
+    ),
+    "coconut": (
+        "Nitrogen: 500 g/palm/year (e.g., Urea)\n"
+        "Phosphorus: 320 g/palm/year (e.g., SSP/DAP)\n"
+        "Potassium: 1200 g/palm/year (e.g., MOP)\n"
+        "Apply in two splits annually."
+    ),
+    "cotton": (
+        "Nitrogen: 100 kg/ha (e.g., Urea)\n"
+        "Phosphorus: 50 kg/ha (e.g., SSP/DAP)\n"
+        "Potassium: 50 kg/ha (e.g., MOP)\n"
+        "Apply as basal and top dressing."
+    ),
+    "jute": (
+        "Nitrogen: 60 kg/ha (e.g., Urea)\n"
+        "Phosphorus: 30 kg/ha (e.g., SSP/DAP)\n"
+        "Potassium: 30 kg/ha (e.g., MOP)\n"
+        "Split into basal and top dressing."
+    ),
+    "coffee": (
+        "Nitrogen: 120 kg/ha (e.g., Urea)\n"
+        "Phosphorus: 90 kg/ha (e.g., DAP)\n"
+        "Potassium: 120 kg/ha (e.g., MOP)\n"
+        "Split into 2–3 doses per year."
+    ),
 }
 
 def get_fertilizer_recommendation(crop):
