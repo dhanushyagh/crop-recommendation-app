@@ -252,32 +252,49 @@ if st.session_state.show_location_result:
     if st.session_state.weather_message:
         st.info(st.session_state.weather_message)
     if st.session_state.weather_error:
-        st.error(st.session_state.weather_error)
+        st.error(st.session_state.weather_error) 
 
-#  Inputs Section 
+#  Inputs Section with Farmer Photos on Both Sides 
 
 st.subheader("🧪 Enter Soil and Weather Data")
 
-N = st.number_input("Nitrogen", min_value=0)
-P = st.number_input("Phosphorus", min_value=0)
-K = st.number_input("Potassium", min_value=0)
+left_col, center_col, right_col = st.columns([1, 5, 1])
 
-temperature = st.number_input(
-    "Temperature (°C)",
-    value=st.session_state.weather_data["temp"]
-)
-humidity = st.number_input(
-    "Humidity (%)",
-    value=st.session_state.weather_data["humidity"]
-)
-ph = st.number_input(
-    "pH",
-    min_value=5.0, max_value=14.0
-)
-rainfall = st.number_input(
-    "Rainfall (mm)",
-    value=st.session_state.weather_data["rainfall"]
-)
+with left_col:
+    st.image(
+        "male_farmer.jpg", 
+        caption="Male Farmer",
+        use_column_width=True
+    )
+
+with center_col:
+    N = st.number_input("Nitrogen", min_value=0)
+    P = st.number_input("Phosphorus", min_value=0)
+    K = st.number_input("Potassium", min_value=0)
+
+    temperature = st.number_input(
+        "Temperature (°C)",
+        value=st.session_state.weather_data["temp"]
+    )
+    humidity = st.number_input(
+        "Humidity (%)",
+        value=st.session_state.weather_data["humidity"]
+    )
+    ph = st.number_input(
+        "pH",
+        min_value=5.0, max_value=14.0
+    )
+    rainfall = st.number_input(
+        "Rainfall (mm)",
+        value=st.session_state.weather_data["rainfall"]
+    )
+
+with right_col:
+    st.image(
+        "female_farmer.jpg", 
+        caption="Female Farmer",
+        use_column_width=True
+    )
 
 #  Prediction Button
 
