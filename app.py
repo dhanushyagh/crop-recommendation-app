@@ -155,7 +155,7 @@ with left_col:
     st.markdown(
         """
         <div style='display:flex; justify-content:center; align-items:center; height:80vh;'>
-            <img src='malefarmer.jpg' style='height:60vh; object-fit:contain;' alt='Male Farmer'>
+            <img src='malefarmer.jpeg' style='height:60vh; object-fit:contain;' alt='Male Farmer'>
         </div>
         """,
         unsafe_allow_html=True
@@ -187,7 +187,7 @@ with right_col:
     st.markdown(
         """
         <div style='display:flex; justify-content:center; align-items:center; height:80vh;'>
-            <img src='femalefarmer.jpg' style='height:60vh; object-fit:contain;' alt='Female Farmer'>
+            <img src='femalefarmer.jpeg' style='height:60vh; object-fit:contain;' alt='Female Farmer'>
         </div>
         """,
         unsafe_allow_html=True
