@@ -146,7 +146,7 @@ humidity = st.number_input(
 )
 ph = st.number_input(
     "pH",
-    min_value=0.0, max_value=14.0
+    min_value=5.0, max_value=14.0
 )
 rainfall = st.number_input(
     "Rainfall (mm)",
